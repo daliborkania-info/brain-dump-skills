@@ -1,0 +1,12 @@
+# transient artifact backups produced by the editing-discipline rules
+*.bak
+*.bak-*
+*.tmp
+
+# python cache (none should ship, but just in case)
+__pycache__/
+*.pyc
+
+# OS noise
+.DS_Store
+Thumbs.db
