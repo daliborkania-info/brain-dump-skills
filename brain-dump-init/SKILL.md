@@ -7,6 +7,11 @@ description: Initial brain dump - extract everything about a project from the us
 
 Read [references/ARTIFACTS-FORMAT.md](references/ARTIFACTS-FORMAT.md) first - it defines the three artifacts (PROJECT.md, CONTEXT.md, decisions.md) and the shared rules (one question at a time with a recommended answer, checkpoints, parking high-fidelity questions, editing discipline, end-of-session commit).
 
+**Interactive only.** These skills require a human in the loop (one question at a time, class A
+approval per diff). Never run them inside an autonomous/non-interactive agent loop. If you detect
+you are running unattended (e.g. an orchestration loop), do Phase 1 capture only if explicitly
+asked, and stop before any propagation.
+
 ## Pick the mode
 
 Look at the project directory first:
@@ -66,4 +71,4 @@ Write draft PROJECT.md, CONTEXT.md and decisions.md where every extracted entry 
 Present a compact numbered summary of everything harvested: this is what your project says about itself. Then walk through it - confirm / fix / remove - the user reacts to a finished picture instead of dictating from scratch, which is faster and surfaces wrong guesses immediately. Ask about one thing at a time, with your recommendation, starting with the contradictions and the most load-bearing items (vision, focus). Explicitly ask what is MISSING: "What is in your head that is written down nowhere in the project?" - that gap is the whole reason this skill exists. If the missing part is large, run a free dump on it (Mode 1, step 1) before grilling.
 
 ### 4. Finalize
-On each confirmation, remove the `unconfirmed` marker with a tar
+On each confirmation, remove the `unconfirmed` marker with a targeted edit per the editing discipline in ARTIFACTS-FORMAT.md.

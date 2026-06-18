@@ -7,6 +7,11 @@ description: Add new thoughts to a running project at any time - capture them im
 
 Read [references/ARTIFACTS-FORMAT.md](references/ARTIFACTS-FORMAT.md) first - it defines the artifacts, the two-phase principle, risk classes A/B and the interviewing rules.
 
+**Interactive only.** These skills require a human in the loop (one question at a time, class A
+approval per diff). Never run them inside an autonomous/non-interactive agent loop. If you detect
+you are running unattended (e.g. an orchestration loop), do Phase 1 capture only if explicitly
+asked, and stop before any propagation.
+
 If no PROJECT.md or decisions.md exists, there is nothing to add to - suggest brain-dump-init instead.
 
 This skill has two strictly separated phases. The separation exists because the two failure modes are opposite: in capture, the risk is losing a thought, so write immediately; in propagation, the risk is silently corrupting decisions the user already made, so never write without approval.
@@ -40,7 +45,11 @@ When the idea is captured, tell the user and ask whether to run the impact analy
 
 Every item: risk class, location, concrete proposed change (diff form), reason.
 
-7. Approval, per the risk classes and the "What counts as approval" rules in ARTIFACTS-FORMAT.md: class A one by one (approve / modify / reject), class B as a batch, shortcuts always available. The original "work it in" request and any advance "I agree with your recommendations" apply to interview answers only - they are never approval for class A changes, because the user has not yet seen the diffs. After presenting the report, stop and wait. If the user cannot respond, the report is the final output of this turn - append it to the Inbox entry so the analysis is not lost.
+7. Approval, per the risk classes and the "What counts as approval" rules in ARTIFACTS-FORMAT.md: class A one by one (approve / modify / reject), class B as a batch, shortcuts always available. The original "work it in" request and any advance "I agree with your recommendations" apply to interview answers only - they are never approval for class A changes, because the user has not yet seen the diffs. After presenting the report, stop and wait. If the user cannot respond, the report is the final output of this turn - append it to the Inbox entry so the analysis is not lost. Additionally, if `docs/pending-decisions.md` exists (orchestrated project), append a one-line pointer there so the harness/cockpit surfaces that a human decision is waiting.
 
-8. Apply only what was approved, following the editing discipline in ARTIFACTS-FORMAT.md: targeted find-and-replace edits only, never a whole-file rewrite. Revise a decision by replacing just its Status line; the new direction becomes a separate new decision entry. Rejected proposals go into the relevant decision's "Options considered" as rejected, with the reason. Mark the Inbox entry `propagated` (or `impact-reviewed` if only partially applied). After every edit, re-read the file and confirm no pre-existing entry was lost and the file is not truncated before reporting success.
+8. Apply only what was approved, following the editing discipline in ARTIFACTS-FORMAT.md: targeted find-and-replace edits only, never a whole-file rewrite. Revise a decision by replacing just its Status line; the new direction becomes a separate new decision entry. Rejected proposals go into the relevant decision's "Options considered" as rejected, with the reason. Mark the Inbox entry `propagated` (or `impact-reviewed` if only partially applied).
+
+If any applied class A change touched PROJECT.md focus/goals or a decision, and the project has a planning/execution layer, end with a PLAN-IMPACT NOTE: tell the user which plan artifacts (development plan / sprint / STATE.md / ledger) now need to be re-derived, and recommend running the project's plan-resync step (e.g. `/resync-plan`). Do not edit those plan files yourself - that is a separate implementation/orchestration session.
+
+After every edit, re-read the file and confirm no pre-existing entry was lost and the file is not truncated before reporting success.
 

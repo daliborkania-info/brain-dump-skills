@@ -30,7 +30,7 @@ The current direction and priorities. This section changes when new ideas shift 
 - `path/to/file.md` - one line on what it contains and why it matters.
 ```
 
-The "Key documents" list defines the scope of impact analysis. Only files listed here (plus the three artifacts) are checked when propagating new ideas. Keep it short and current.
+The "Key documents" list defines the scope of impact analysis. Only files listed here (plus the three artifacts) are checked when propagating new ideas. Keep it short and current. If the project has a planning/execution layer (e.g. a development plan, `docs/sprints/`, a live `STATE.md`, a roadmap), list those files here too - otherwise a change to focus or a decision will never reach the running plan.
 
 ### CONTEXT.md - what words mean
 
@@ -64,10 +64,16 @@ The clarified idea, as agreed during grilling. Status: captured | impact-reviewe
 - **Decision:** what was chosen
 - **Options considered:** including rejected ones, each with the reason it was rejected
 - **Depends on:** D-xxx (if any)
-- **Status:** active | revised YYYY-MM-DD (reason)
+- **Status:** leaning | active | locked | revised YYYY-MM-DD (reason)
 ```
 
 Rejected options are first-class content. Weeks later, "why didn't we do X" is answered by the log instead of re-running the whole interview.
+
+**Status semantics.** `leaning` = a working preference, not yet committed. `active` = decided
+and in effect. `locked` = decided and protected: it cannot be broken without a superseding
+decision (in an orchestrated project, a `locked` decision is changed only via an ADR that is
+then mirrored here). `revised YYYY-MM-DD (reason)` = superseded; the new direction is a
+separate new `### D-xxx` entry, never an in-place rewrite of the old one.
 
 ## Shared rules (apply in every brain-dump session)
 
@@ -120,4 +126,15 @@ Decision history is the most valuable thing these files hold and the easiest thi
 Summarize what was resolved and what remains open. If the project uses git, offer to commit with a message covering: what changed, why, what was rejected, and what remains as TODO. The git history replaces a CHANGELOG file.
 
 ### Provenance markers (adoption)
-When artifact entries are inferred from existing project files rather than stated by the user, they carry a marker: `(source: <file or location>, unconfirmed)`. The marker is removed when the user confirms the entry during review. Entries still marked `unconfirmed` are hypotheses - treat them with lower confidence
+When artifact entries are inferred from existing project files rather than stated by the user, they carry a marker: `(source: <file or location>, unconfirmed)`. The marker is removed when the user confirms the entry during review. Entries still marked `unconfirmed` are hypotheses - treat them with lower confidence.
+
+### Interplay with an orchestration harness (optional)
+When the project also runs an autonomous delivery harness, keep the layers separate:
+- `decisions.md > ## Inbox` is the HUMAN strategic capture channel (brain-dump). Machines may
+  append a `captured` entry here, but only a human applies class A changes.
+- `docs/pending-decisions.md` (if present) is the MACHINE escalation register (Tier C waiting /
+  Tier B veto) - the harness owns it. It is NOT the same thing as the Inbox.
+- ADRs under `docs/adr/` are mirrored into `## Decision log` as `### D-xxx` entries by the
+  orchestrator, using the same editing discipline as this file (targeted insert; revise only the
+  `- **Status:**` line). brain-dump-sync should treat an ADR with no matching `D-xxx`, or a
+  `D-xxx` whose status contradicts its ADR, as a contradiction to report.

@@ -7,6 +7,11 @@ description: Reconcile brain-dump artifacts (PROJECT.md, CONTEXT.md, decisions.m
 
 Read [references/ARTIFACTS-FORMAT.md](references/ARTIFACTS-FORMAT.md) first - it defines the artifacts, risk classes A/B and the approval rules.
 
+**Interactive only.** These skills require a human in the loop (one question at a time, class A
+approval per diff). Never run them inside an autonomous/non-interactive agent loop. If you detect
+you are running unattended (e.g. an orchestration loop), do Phase 1 capture only if explicitly
+asked, and stop before any propagation.
+
 If no artifacts exist, there is nothing to sync - suggest brain-dump-init.
 
 Documentation that silently drifts from reality is worse than no documentation: it answers questions wrongly with full confidence. Sync exists to catch drift early and cheaply. But sync must never "fix" things on its own - a contradiction between a document and reality has two possible resolutions (the doc is stale, or the work went off course), and only the user knows which.
@@ -41,8 +46,10 @@ Output a numbered report before any write:
 
 Every item: risk class, both sides of the contradiction, hypothesis, concrete proposed fix as a diff.
 
-The user's initial request ("update the docs", "sync the docs") authorized producing this report - it did not authorize applying any of it. Per the "What counts as approval" rules in ARTIFACTS-FORMAT.md, class A fixes need the user's answer to "which side is right?" AFTER seeing this report - your hypothesis, however confident, is not a resolution. After presenting the report, stop and wait. If the user cannot respond, the report is the final output of this turn.
+The user's initial request ("update the docs", "sync the docs") authorized producing this report - it did not authorize applying any of it. Per the "What counts as approval" rules in ARTIFACTS-FORMAT.md, class A fixes need the user's answer to "which side is right?" AFTER seeing this report - your hypothesis, however confident, is not a resolution. After presenting the report, stop and wait. If the user cannot respond, the report is the final output of this turn. If `docs/pending-decisions.md` exists, append a one-line pointer there so the harness surfaces the open sync decisions.
 
 ## Step 4: Approve and apply
 
-Per the risk classes in ARTIFACTS-FORMAT.md: class A one by one, class B as a batch, shortcuts available, nothing applied without explicit instruction given after the report. Apply changes following the editing discipline in ARTIFACTS-FORMAT.md: targeted find-and-replace edits only - replace just the Status line to revise a decision, insert under a heading to add an entry - never a whole-file rewrite, and re-read each edited file afterwards to confirm nothing pre-existing was lost or truncated. Items the user does not resolve go into PROJECT.md > Open questions so they are not silentl
+Per the risk classes in ARTIFACTS-FORMAT.md: class A one by one, class B as a batch, shortcuts available, nothing applied without explicit instruction given after the report. Apply changes following the editing discipline in ARTIFACTS-FORMAT.md: targeted find-and-replace edits only - replace just the Status line to revise a decision, insert under a heading to add an entry - never a whole-file rewrite, and re-read each edited file afterwards to confirm nothing pre-existing was lost or truncated. Items the user does not resolve go into PROJECT.md > Open questions so they are not silently lost.
+
+If a sync fix changed PROJECT.md focus/goals or a decision, end with a PLAN-IMPACT NOTE recommending the project's plan-resync step (e.g. `/resync-plan`), so the change reaches the live cursor. Do not edit plan files here.
